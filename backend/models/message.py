@@ -1,16 +1,15 @@
-
 from __future__ import annotations
 
 """Pydantic models for chat messages and WebSocket payloads."""
 
-from typing import Literal, Optional
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, Field
 
 
 class UserMessage(BaseModel):
     """Incoming user message sent over WebSocket."""
 
-    type: Literal["user_message"] = "user_message"
+    type: str = Field("user_message", const=True)
     message_id: str
     content: str
     conversation_id: Optional[str] = None
@@ -19,7 +18,7 @@ class UserMessage(BaseModel):
 class AssistantChunk(BaseModel):
     """Outgoing assistant message chunk sent over WebSocket."""
 
-    type: Literal["assistant_chunk"] = "assistant_chunk"
+    type: str = Field("assistant_chunk", const=True)
     message_id: str
     content: str
     is_final: bool = False
@@ -28,4 +27,4 @@ class AssistantChunk(BaseModel):
 class HealthResponse(BaseModel):
     """Simple health-check response body."""
 
-    status: Literal["ok"] = "ok"
+    status: str = "ok"
