@@ -78,6 +78,14 @@ import { onMounted, onBeforeUnmount, reactive, ref, watch, nextTick } from 'vue'
 import { marked } from 'marked';
 import { addMessageListener, initWebSocket, sendUserMessage } from '../utils/websocket';
 
+const props = defineProps({
+  conversationId: {
+    type: String,
+    required: false,
+    default: ''
+  }
+});
+
 const messages = reactive([]);
 const inputText = ref('');
 const isTyping = ref(false);
@@ -182,6 +190,17 @@ onBeforeUnmount(() => {
 watch(
   () => messages.length,
   () => {
+    queueScroll();
+  }
+);
+
+// 当切换会话时，清空当前消息，以免不同会话串联
+watch(
+  () => props.conversationId,
+  () => {
+    messages.splice(0, messages.length);
+    isTyping.value = false;
+    inputText.value = '';
     queueScroll();
   }
 );
